@@ -5,7 +5,7 @@ VALUES  ("Human Resources"),
         ("Sales"),
         ("Accounting"),
         ("Logistics"),
-        (""),
+        ("Environment"),
         ("Recuiting"),
         ("Upper Management"),
         ("Payroll");
