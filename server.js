@@ -1,7 +1,8 @@
 
 // Import and require mysql2
 const mysql = require('mysql2');
-const inquirer = require("inquirer")
+const inquirer = require("inquirer");
+const { title } = require('process');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -16,11 +17,118 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-// Query database
-db.query('SELECT * FROM employee', function (err, results) {
-  console.log(results);
-  console.log(err)
-});
+
+db.connect(function(){
+ employeeTrack()  
+})
 
 
 
+function employeeTrack() {
+  inquirer.prompt([
+    {
+      name: "choice",
+      type: "list",
+      message: "Please select an option?",
+      choices: [
+        "View all departments",
+        "View all roles",
+        "View all employees",
+        "Add a new department",
+        "Add a new role",
+        "Add a new employee",
+        "Update employee roles",
+        "Quit"
+      ]
+    }])
+    .then(function (response) {
+      switch (response.choice) {
+        case "View all departments":
+          viewAllDepartments();
+          break;
+        case "View all roles":
+          viewAllRoles();
+          break;
+        case "View all employees":
+          viewAllEmployees();
+          break;
+        case "Add a new department":
+          addNewDepartment();
+          break;
+        case "Add a new role":
+          addNewRole();
+          break;
+        case "Add a new employee":
+          addNewEmployee();
+          break;
+        case "Update employee roles":
+          updateRole();
+          break;
+        case "exit":
+          db.end();
+          break;
+      }
+    });
+};
+
+
+
+function viewAllRoles(){
+   db.query('SELECT * FROM roles', (err, res) =>{
+    if(err) throw err
+    console.table(res)
+    employeeTrack()
+  });
+}
+
+function viewAllDepartments(){
+  db.query("SELECT * FROM dapartment", (err, res)=>{
+    if(err) throw err
+    console.table(res)
+    employeeTrack()
+  })
+}
+
+function viewAllEmployees(){
+  db.query("SELECT * FROM employee", (err, res)=>{
+    if(err) throw err
+    console.table(res)
+    employeeTrack()
+  })
+}
+
+function addNewEmployee(){
+  db.query("SELECT * FROM roles", (err, res)=>{
+    if(err) throw err
+    inquirer.prompt([
+      {
+        type:"list",
+        name:"newEmpRole",
+        message:"please choose a new role for employee",
+        choices: res.map(role => role.title)
+      },
+      {
+        type:"input",
+        name:"newEmpFN",
+        message:"please enter the new employees first name",
+      },
+      {
+        type:"input",
+        name:"newEmpLN",
+        message:"please enter the new employees last name",
+      }
+    ]).then(answer=>{
+      const roleTitle = res.find(role=>role.title===answer.newEmpRole)
+      db.query("INSERT INTO employee SET ?",{
+        first_name: answer.newEmpFN,
+        last_name: answer.newEmpLN,
+        role_id: roleTitle.id
+      },function(err){
+        if(err)throw err
+        console.log("new employee sucsesfuly added")
+        employeeTrack()
+      })
+     
+    })
+  })
+}
