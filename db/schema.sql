@@ -9,3 +9,14 @@ CREATE TABLE employee (
     manager_id INT
 );
 
+CREATE TABLE role (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(30) NOT NULL,
+    salary INT NOT NULL,
+    dapartment_id INT NOT NULL
+);
+
+CREATE TABLE dapartment (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL
+);
