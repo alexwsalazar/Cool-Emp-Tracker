@@ -27,7 +27,7 @@ CREATE TABLE roles (
 
 -- Create department table 
 
-CREATE TABLE dapartment (
+CREATE TABLE departments (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     dept_name VARCHAR(30) NOT NULL
 );

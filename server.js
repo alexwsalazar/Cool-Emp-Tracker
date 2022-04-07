@@ -82,7 +82,7 @@ function viewAllRoles(){
 }
 
 function viewAllDepartments(){
-  db.query("SELECT * FROM dapartment", (err, res)=>{
+  db.query("SELECT * FROM departments", (err, res)=>{
     if(err) throw err
     console.table(res)
     employeeTrack()
@@ -126,6 +126,45 @@ function addNewEmployee(){
       },function(err){
         if(err)throw err
         console.log("new employee sucsesfuly added")
+        employeeTrack()
+      })
+     
+    })
+  })
+}
+
+
+function addNewRole(){
+  db.query("SELECT * FROM departments", (err, res)=>{
+    if(err) throw err
+    inquirer.prompt([
+      {
+        type:"input",
+        name:"newTitle",
+        message:"please enter the new title"
+        
+      },
+      {
+        type:"input",
+        name:"newSalary",
+        message:"please enter the new salary",
+      },
+      {
+        type:"list",
+        name:"newDprmnt",
+        message:"please chooce a new dapartment",
+        choices: res.map(Dprtmnt => Dprtmnt.dept_name)
+
+      }
+    ]).then(answer=>{
+      const roleTitle = res.find(role=>role.title===answer.newDeptRole)
+      db.query("INSERT INTO role SET ?",{
+        title: answer.newTitle,
+        salary: answer.newSalary,
+        department_id: dprmntDept_name.id
+      },function(err){
+        if(err)throw err
+        console.log("new role sucsesfuly added")
         employeeTrack()
       })
      
