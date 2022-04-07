@@ -61,7 +61,7 @@ function employeeTrack() {
         case "Add a new employee":
           addNewEmployee();
           break;
-        case "Update employee roles":
+        case "Update employee role":
           updateRole();
           break;
         case "exit":
@@ -174,6 +174,7 @@ function addNewRole(){
 
 function addNewDepartment(){
   db.query("SELECT * FROM departments", (err, res)=>{
+    if(err) throw err
     inquirer.prompt([
       {
         type:"input",
@@ -196,8 +197,15 @@ function addNewDepartment(){
 }
 
 function updateRole(){
-  db.query("SELECT id FROM roles", (err, res)=>{
+  db.query(" SELECT * FROM employee ", (err, res)=>{
+    if(err) throw err
     inquirer.prompt([
+      {
+        type:"list",
+        name:"empChose",
+        message:"please choose a employee to update",
+        choices: res.map(empLast => empLast.last_name)
+      },
       {
         type:"input",
         name:"newTitle",
@@ -208,13 +216,6 @@ function updateRole(){
         type:"input",
         name:"newSalary",
         message:"please enter the new salary",
-      },
-      {
-        type:"list",
-        name:"newDprmnt",
-        message:"please chooce a new dapartment",
-        choices: res.map(Dprtmnt => Dprtmnt.dept_name)
-
       }
     ])
   })
