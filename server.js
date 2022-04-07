@@ -194,3 +194,29 @@ function addNewDepartment(){
     })
   })
 }
+
+function updateRole(){
+  db.query("SELECT id FROM roles", (err, res)=>{
+    inquirer.prompt([
+      {
+        type:"input",
+        name:"newTitle",
+        message:"please enter the new title"
+        
+      },
+      {
+        type:"input",
+        name:"newSalary",
+        message:"please enter the new salary",
+      },
+      {
+        type:"list",
+        name:"newDprmnt",
+        message:"please chooce a new dapartment",
+        choices: res.map(Dprtmnt => Dprtmnt.dept_name)
+
+      }
+    ])
+  })
+
+}
