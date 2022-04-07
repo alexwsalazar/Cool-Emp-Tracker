@@ -157,8 +157,8 @@ function addNewRole(){
 
       }
     ]).then(answer=>{
-      const roleTitle = res.find(role=>role.title===answer.newDeptRole)
-      db.query("INSERT INTO role SET ?",{
+      const dprmntDept_name= res.find(role=>role.title===answer.newDeptRole)
+      db.query("INSERT INTO roles SET ?",{
         title: answer.newTitle,
         salary: answer.newSalary,
         department_id: dprmntDept_name.id
