@@ -171,3 +171,26 @@ function addNewRole(){
     })
   })
 }
+
+function addNewDepartment(){
+  db.query("SELECT * FROM departments", (err, res)=>{
+    inquirer.prompt([
+      {
+        type:"input",
+        name:"newDeptName",
+        message:"please enter the new department"
+        
+      },
+     
+    ]).then(answer=>{
+      
+      db.query("INSERT INTO departments SET ?",{
+        dept_name: answer.newDeptName
+      },function(err){
+        if(err)throw err
+        console.log("new department sucsesfuly added")
+        employeeTrack()
+      })
+    })
+  })
+}
