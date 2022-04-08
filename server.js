@@ -37,7 +37,7 @@ function employeeTrack() {
         "Add a new department",
         "Add a new role",
         "Add a new employee",
-        "Update employee roles",
+        "Update employee role",
         "Quit"
       ]
     }])
@@ -64,7 +64,7 @@ function employeeTrack() {
         case "Update employee role":
           updateRole();
           break;
-        case "exit":
+        case "Quit":
           db.end();
           break;
       }
@@ -196,28 +196,37 @@ function addNewDepartment(){
   })
 }
 
-function updateRole(){
-  db.query(" SELECT * FROM employee ", (err, res)=>{
-    if(err) throw err
-    inquirer.prompt([
-      {
-        type:"list",
-        name:"empChose",
-        message:"please choose a employee to update",
-        choices: res.map(empLast => empLast.last_name)
-      },
-      {
-        type:"input",
-        name:"newTitle",
-        message:"please enter the new title"
-        
-      },
-      {
-        type:"input",
-        name:"newSalary",
-        message:"please enter the new salary",
-      }
-    ])
-  })
+async function updateRole() {
+    
+  const empResults = await db.promise().query('SELECT id, first_name, last_name FROM employee');
+  const employees = empResults[0].map(({ id, first_name, last_name }) => ({ value: id, name: `${first_name} ${last_name}` }))
 
+  const rolesResults = await db.promise().query('SELECT id, title FROM roles');
+  const roles = rolesResults[0].map(({ id, title }) => ({ value: id, name: title }))
+
+  const result = await inquirer.prompt([
+      {
+          type: 'list',
+          name: 'employee',
+          message: "Which employee's role do you want to update?",
+          choices: employees
+      },
+      {
+          type: 'list',
+          name: 'role',
+          message: "Which role do you want to assign the selected employee?",
+          choices: roles
+      },
+
+  ])
+
+  const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+  db.query(query, [result.role, result.employee], (err, results) => {
+
+      if(err) throw err;
+     
+      console.log('Successfully updated role!');
+      employeeTrack();
+      
+  })
 }
